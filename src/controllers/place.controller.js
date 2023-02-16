@@ -124,22 +124,26 @@ exports.searchPlaces = (req, res) => {
 
 exports.filterPlaces = (req, res) => {
 
-  let queryString = req.query;
-  let capacityValue = queryString["capacity"];
-  let pricingValue = queryString["pricing.perDay"];
+  let filter = {};
 
-  if (capacityValue != undefined || capacityValue != null) {
-    capacityValue = capacityValue.split(',');
-    queryString["capacity"] = { $gte: capacityValue[0], $lte: capacityValue[1] };
+  let minCapacity = req.query.minCapacity;
+  let maxCapacity = req.query.maxCapacity;
+  let minPrice = req.query.minPrice;
+  let maxPrice = req.query.maxPrice;
+  let typesValue = req.query["types"];
+
+  if (minCapacity != undefined && minCapacity != null && maxCapacity != undefined && maxCapacity != null) {
+    filter["capacity"] = { $gte: minCapacity, $lte: maxCapacity };
   }
-  if (pricingValue != undefined || pricingValue != null) {
-    pricingValue = pricingValue.split(',');
-    queryString["pricing.perDay"] = { $gte: pricingValue[0], $lte: pricingValue[1] };
+  if (minPrice != undefined && minPrice != null && maxPrice != undefined && maxPrice != null) {
+    filter["pricing.perDay"] = { $gte: minPrice, $lte: maxPrice};
+  }
+  if (typesValue != undefined || typesValue != null) {
+    filter["$or"] = [{"types" : typesValue}];
   };
 
-  Place.find({ $and: [queryString] })
+  Place.find({ $and: [filter] })
     .then((places) => {
-      console.log(places[0].types.name);
       if (!places.length) {
         return res.status(404).send({
           message: "No places were found"
