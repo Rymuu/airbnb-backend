@@ -14,8 +14,7 @@ const placeSchema = mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    ref: "User"
   },
   pricing: {
     perDay: Number
@@ -26,16 +25,25 @@ const placeSchema = mongoose.Schema({
     min: 0,
     max: 5
   },
-  images: [String],
+  images: {
+    type: [String],
+    required: true,
+    validate: {
+      validator: function (value) {
+          return value.length >= 6;
+      },
+      message: "Your place must contain at least 6 images"
+  }
+  },
   capacity: {
     type: Number,
-    required:true
+    required: true
   },
   description: {
     type: String,
     required: true,
     minLength: 20,
-    maxLength:300
+    maxLength: 300
   },
   address: {
     country: String,
@@ -44,12 +52,13 @@ const placeSchema = mongoose.Schema({
     zipCode: {
       type: Number,
       maxLength: 5,
-      minLength:5
+      minLength: 5
     },
     gps: {
       lat: Number,
-      long:Number
+      long: Number
     }
+
   }
 })
 

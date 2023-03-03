@@ -1,3 +1,4 @@
+const { findByIdAndUpdate } = require('../models/place.model');
 const Place = require('../models/place.model');
 const User = require('../models/user.model');
 
@@ -8,11 +9,10 @@ exports.createPlace = (req, res) => {
         console.log("new", place);
         try {
           const user = await User.findById(req.userToken.id);
-          console.log("the owner is", user);
           console.log(req.userToken);
           user.places.push(place._id);
           user.save();
-          place.owner.push(req.userToken.id);
+          place.owner = req.userToken.id;
           place.save();
           res.send(place);
         }
@@ -27,6 +27,13 @@ exports.createPlace = (req, res) => {
 exports.getPlaces = (req, res) => {
   Place.find().populate('owner')
     .then((places) => res.send(places)
+    )
+    .catch(err => res.status(400).send(err))
+}
+
+exports.getPlaceById = (req, res) => {
+  Place.findById(req.params.id).populate('owner')
+    .then((place) => res.send(place) 
     )
     .catch(err => res.status(400).send(err))
 }
@@ -136,10 +143,10 @@ exports.filterPlaces = (req, res) => {
     filter["capacity"] = { $gte: minCapacity, $lte: maxCapacity };
   }
   if (minPrice != undefined && minPrice != null && maxPrice != undefined && maxPrice != null) {
-    filter["pricing.perDay"] = { $gte: minPrice, $lte: maxPrice};
+    filter["pricing.perDay"] = { $gte: minPrice, $lte: maxPrice };
   }
   if (typesValue != undefined || typesValue != null) {
-    filter["$or"] = [{"types" : typesValue}];
+    filter["$or"] = [{ "types": typesValue }];
   };
 
   Place.find({ $and: [filter] })

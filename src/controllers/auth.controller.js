@@ -42,7 +42,7 @@ exports.login = (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).send({
           message: "password not valid",
-          auth: false
+          auth: false,
         })
       }
       const userToken = signJwt({
@@ -53,6 +53,7 @@ exports.login = (req, res) => {
       res.send({
         auth: true,
         message: "User logged",
+        isAdmin : user.isAdmin,
         token: userToken
       })
 

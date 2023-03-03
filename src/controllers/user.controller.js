@@ -43,3 +43,19 @@ exports.getUsers = (req, res) => {
     })
     .catch(err => res.send(err))
 }
+
+exports.becomeOwner = (req, res) => {
+  console.log(req.body);
+  User.findByIdAndUpdate(req.userToken.id, {type:"OWNER"}, { new: true })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found"
+        })
+      }
+      res.send(user)
+    })
+    .catch(err => {
+      res.status(400).send(err)
+    })
+}

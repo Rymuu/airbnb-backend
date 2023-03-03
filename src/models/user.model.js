@@ -41,6 +41,18 @@ const userSchema = mongoose.Schema({
             type: mongoose.SchemaTypes.ObjectId,
             ref: "Place"
         }
+    ],
+    reservations: [
+        {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "Reservation"
+        }
+    ],
+    reservationsOwner: [
+        {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "Reservation"
+        }
     ]
 })
 
