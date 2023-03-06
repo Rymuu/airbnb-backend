@@ -30,9 +30,9 @@ const placeSchema = mongoose.Schema({
     required: true,
     validate: {
       validator: function (value) {
-          return value.length >= 6;
+          return value.length >= 5;
       },
-      message: "Your place must contain at least 6 images"
+      message: "Your place must contain at least 5 images"
   }
   },
   capacity: {
@@ -43,7 +43,7 @@ const placeSchema = mongoose.Schema({
     type: String,
     required: true,
     minLength: 20,
-    maxLength: 300
+    maxLength: 500
   },
   address: {
     country: String,
